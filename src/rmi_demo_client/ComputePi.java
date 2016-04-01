@@ -12,9 +12,9 @@ public class ComputePi {
 		}
 		try {
 			String name = "Compute";
-			Registry registry = LocateRegistry.getRegistry(1099);
+			Registry registry = LocateRegistry.getRegistry(Integer.parseInt(args[0]));
 			Compute comp = (Compute) registry.lookup(name);
-			Pi task = new Pi(2000);
+			Pi task = new Pi(Integer.parseInt(args[1]));
 			BigDecimal pi = comp.executeTask(task);
 			System.out.println(pi);
 		} catch (Exception e) {
