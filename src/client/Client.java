@@ -3,17 +3,18 @@ package client;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 import server.WorkingService;
 import tasks.*;
 /**
  * RMI Command Pattern Client Example
  * @author Michael Borko, Michael Stoeger
- * @version 4.4.2016
+ * @version 5.4.2016
  */
 public class Client {
 	/**
-	 * Connects to server, sends a task to server and exits afterwards
+	 * Connects to server, sends a task to server and waits for Callback
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -25,9 +26,13 @@ public class Client {
 			Registry registry = LocateRegistry.getRegistry(1234);
 			WorkingService uRemoteObject = (WorkingService) registry.lookup("MyWorkingService");
 			System.out.println("Service found");
-
+			
+			//create and export Callback object
+			Callback c = new WriteCallback();
+			UnicastRemoteObject.exportObject(c, 0);
+			
 			//run task
-			Add t = new Add(2,3);
+			Add t = new Add(2,3,c);
 			uRemoteObject.work(t);
 
 		} catch (RemoteException re) {
